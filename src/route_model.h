@@ -29,7 +29,7 @@ class RouteModel : public Model {
 
     /* Private Functions */ 
     private:
-      Node* FindNeighbors(vector<int> node_indices);
+      Node* FindNeighbors(vector<int> node_indices) const;
 
     /* Public member variables */ 
     public:

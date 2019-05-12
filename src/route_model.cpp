@@ -9,6 +9,18 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
     }
 }
 
-RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices){
-    return nullptr;
+RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) const{
+    Node* closestNeighbor = nullptr;
+    double currentDistance = std::numeric_limits<double>::max();
+    for(int nodeIndex:node_indices){
+        Node& node = parent_model->SNodes()[nodeIndex];
+        if(!node.m_visited && (&node!=this)){
+            double newDistnace = distance(node);
+            if(newDistnace<currentDistance || closestNeighbor==nullptr){
+                currentDistance = newDistnace;
+                closestNeighbor = &node;
+            }
+        }
+    }
+    return closestNeighbor;
 }
