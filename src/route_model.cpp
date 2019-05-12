@@ -8,3 +8,7 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
         index++;
     }
 }
+
+RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices){
+    return nullptr;
+}
