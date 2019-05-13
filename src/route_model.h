@@ -20,6 +20,7 @@ class RouteModel : public Model {
         *****************************************/ 
 
     Node(){}
+    Node(float x, float y);
     Node(int idx, RouteModel * search_model, Model::Node node);
     void FindNeighbors();
 
@@ -56,6 +57,8 @@ class RouteModel : public Model {
   inline std::unordered_map<int, vector<const Model::Road*>>& GetNodeToRoadMap(){
     return node_to_road;
   }
+
+  RouteModel::Node& FindClosestNode(float x, float y);
   /*****************************************
   **********    Public Variables  **********
   *****************************************/ 

@@ -23,21 +23,40 @@ void RouteModel::CreateNodeToRoadHashmap(){
     }
 }
 
+RouteModel::Node& RouteModel::FindClosestNode(float x, float y){
+    RouteModel::Node node{x, y};
+    float min_dist = std::numeric_limits<float>::max();
+    int closest_idx;
+    for(const auto& road:Roads()){
+        if(road.type!=Model::Road::Type::Footway){
+            for(int otherNodeIdx:Ways()[road.way].nodes){
+                float dist = node.distance(SNodes()[otherNodeIdx]);
+                if( dist < min_dist){
+                    min_dist    = dist;
+                    closest_idx = otherNodeIdx;
+                }
+            }
+        }
+    }
+    return SNodes()[closest_idx];
+}
 
 
 /************************* Node - Internal Class definition ******************************/ 
-RouteModel::Node::Node(int idx, RouteModel * search_model, Model::Node node) :
-    Model::Node(node), parent_model(search_model)
-      , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
-    , m_visited{false}, m_neighbors{}, index(idx) {
+RouteModel::Node::Node(float x, float y):RouteModel::Node::Node(0, nullptr, Model::Node{x,y}){  //User construcotr delegation
+}
 
+RouteModel::Node::Node(int idx, RouteModel * search_model, Model::Node node) :
+    Model::Node(node), parent_model{search_model}
+      , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
+      , m_visited{false}, m_neighbors{}, index(idx) {
 }
 
 RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) const{
     Node* closestNeighbor = nullptr;
     double currentDistance = std::numeric_limits<double>::max();
     for(int nodeIndex:node_indices){
-        Node& node = parent_model->SNodes()[nodeIndex];
+        Node node = parent_model->m_Nodes[nodeIndex];
         if(!node.m_visited && (&node!=this)){
             double newDistnace = distance(node);
             if(newDistnace<currentDistance || closestNeighbor==nullptr){
@@ -50,7 +69,10 @@ RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) cons
 }
 
 void RouteModel::Node::FindNeighbors(){
-    // for(const auto& road:parent_model->Ways()[road]){
-
-    // }
+    for(const Road* road:parent_model->node_to_road[index]){
+        RouteModel::Node* neighboringNode = FindNeighbors(parent_model->Ways()[road->way].nodes);
+        if(neighboringNode){
+            m_neighbors.push_back(neighboringNode);
+        }
+    }
 }
