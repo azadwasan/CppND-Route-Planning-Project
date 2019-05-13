@@ -9,6 +9,13 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
     }
 }
 
+RouteModel::Node(int idx, RouteModel * search_model, Model::Node node) :
+    Model::Node(node), parent_model(search_model)
+      , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
+    , m_visited{false}, m_neighbors{}, index(idx) {
+
+}
+
 RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) const{
     Node* closestNeighbor = nullptr;
     double currentDistance = std::numeric_limits<double>::max();
@@ -23,4 +30,10 @@ RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) cons
         }
     }
     return closestNeighbor;
+}
+
+void RouteModel::Node::FindNeighbors(){
+    for(const auto& road:parent_model->Ways()[road]){
+
+    }
 }

@@ -18,20 +18,15 @@ class RouteModel : public Model {
     // Add public Node variables and methods here.
 
     Node(){}
-    Node(int idx, RouteModel * search_model, Model::Node node) :
-    Model::Node(node), parent_model(search_model)
-      , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
-    , m_visited{false}, m_neighbors{}, index(idx) {}
+    Node(int idx, RouteModel * search_model, Model::Node node);
+    void FindNeighbors();
 
     double distance(const Node& otherNode) const {
       return std::sqrt(std::pow((x - otherNode.x), 2) + std::pow((y - otherNode.y), 2)) ;
     }
-
-    /* Private Functions */ 
-    private:
-      Node* FindNeighbors(vector<int> node_indices) const;
-
-    /* Public member variables */ 
+       /*****************************************
+        ******** Public member variables ********
+        *****************************************/ 
     public:
     Node* m_parent;
     float m_hValue;
@@ -39,9 +34,15 @@ class RouteModel : public Model {
     bool m_visited;
     vector<Node*> m_neighbors;
 
-    /* Private member variables */ 
+       /*****************************************
+        ********    Private Functions    ********
+        *****************************************/ 
     private:
-    // Add private Node variables and methods here.
+      Node* FindNeighbors(vector<int> node_indices) const;
+       /*****************************************
+        ******* Private member variables ********
+        *****************************************/ 
+    private:
     int index;
     RouteModel * parent_model = nullptr;
   };
