@@ -9,6 +9,7 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
     }
 }
 
+
 RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) const{
     Node* closestNeighbor = nullptr;
     double currentDistance = std::numeric_limits<double>::max();
