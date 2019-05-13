@@ -23,7 +23,6 @@ class RouteModel : public Model {
       , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
     , m_visited{false}, m_neighbors{}, index(idx) {}
 
-
     double distance(const Node& otherNode) const {
       return std::sqrt(std::pow((x - otherNode.x), 2) + std::pow((y - otherNode.y), 2)) ;
     }
