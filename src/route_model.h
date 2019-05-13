@@ -15,7 +15,9 @@ class RouteModel : public Model {
   public:
   class Node : public Model::Node {
     public:
-    // Add public Node variables and methods here.
+       /*****************************************
+        **********    Public methods   **********
+        *****************************************/ 
 
     Node(){}
     Node(int idx, RouteModel * search_model, Model::Node node);
@@ -47,11 +49,31 @@ class RouteModel : public Model {
     RouteModel * parent_model = nullptr;
   };
 
-  // Add public RouteModel variables and methods here.
+  /*****************************************
+  **********    Public methods   **********
+  *****************************************/ 
   RouteModel(const std::vector<std::byte> &xml);  
+  inline std::unordered_map<int, vector<const Model::Road*>>& GetNodeToRoadMap(){
+    return node_to_road;
+  }
+  /*****************************************
+  **********    Public Variables  **********
+  *****************************************/ 
   std::vector<Node> path; // This variable will eventually store the path that is found by the A* search.
-
   inline vector<Node>& SNodes() {return m_Nodes;}
+
+  private:
+  /*****************************************
+  ********    Private Methods    ********
+  *****************************************/ 
+  void CreateNodeToRoadHashmap();
+
+
+  /*****************************************
+  ******* Private member variables ********
+  *****************************************/ 
   private:
   vector<Node> m_Nodes;
+
+  std::unordered_map<int, vector<const Model::Road*>> node_to_road;
 };

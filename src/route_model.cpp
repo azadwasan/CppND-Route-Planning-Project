@@ -7,9 +7,26 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
         m_Nodes.emplace_back(index, this, node);
         index++;
     }
+    CreateNodeToRoadHashmap();
 }
 
-RouteModel::Node(int idx, RouteModel * search_model, Model::Node node) :
+void RouteModel::CreateNodeToRoadHashmap(){
+    for(const Road& road:Roads()){
+        if(road.type!=Model::Road::Type::Footway){
+            for(int nodeIndex:Ways()[road.way].nodes){
+                if(node_to_road.find(nodeIndex)==node_to_road.end()){
+                    node_to_road[nodeIndex] = vector<const Model::Road*>{};
+                }
+                node_to_road[nodeIndex].push_back(&road);
+            }
+        }
+    }
+}
+
+
+
+/************************* Node - Internal Class definition ******************************/ 
+RouteModel::Node::Node(int idx, RouteModel * search_model, Model::Node node) :
     Model::Node(node), parent_model(search_model)
       , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
     , m_visited{false}, m_neighbors{}, index(idx) {
@@ -33,7 +50,7 @@ RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) cons
 }
 
 void RouteModel::Node::FindNeighbors(){
-    for(const auto& road:parent_model->Ways()[road]){
+    // for(const auto& road:parent_model->Ways()[road]){
 
-    }
+    // }
 }
