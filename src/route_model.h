@@ -54,6 +54,7 @@ class RouteModel : public Model {
   **********    Public methods   **********
   *****************************************/ 
   RouteModel(const std::vector<std::byte> &xml);  
+
   inline std::unordered_map<int, vector<const Model::Road*>>& GetNodeToRoadMap(){
     return node_to_road;
   }
@@ -70,7 +71,6 @@ class RouteModel : public Model {
   ********    Private Methods    ********
   *****************************************/ 
   void CreateNodeToRoadHashmap();
-
 
   /*****************************************
   ******* Private member variables ********
