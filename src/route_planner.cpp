@@ -54,3 +54,17 @@ RouteModel::Node* RoutePlanner::NextNode(){
     }
     return nextNode;
 }
+
+void RoutePlanner::AddNeighbors(RouteModel::Node* currentNode){
+    if(currentNode==nullptr){
+        std::cout<<"RoutePlanner::AddNeighbors, received nullptr, exiting "<<std::endl;
+    }
+    currentNode->FindNeighbors();
+    for(auto& neighborNode:currentNode->m_neighbors){
+        neighborNode->m_parent = currentNode;
+        neighborNode->m_gValue = currentNode->m_gValue + currentNode->distance(*neighborNode);
+        neighborNode->m_hValue = CalculateHValue(neighborNode);
+        m_openList.push_back(neighborNode);
+        neighborNode->m_visited = true;
+    }
+}
