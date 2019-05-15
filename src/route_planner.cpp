@@ -33,3 +33,24 @@ vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node* curr
     return foundPath;
 }
 
+void RoutePlanner::AStarSearch(){
+    m_endNode->m_parent = m_startNode;
+    m_Model.path = ConstructFinalPath(m_endNode);
+}
+
+float RoutePlanner::CalculateHValue(const RouteModel::Node* node){
+    return node->distance(*m_endNode);
+}
+
+RouteModel::Node* RoutePlanner::NextNode(){
+    RouteModel::Node* nextNode = nullptr;
+    std::sort(m_openList.begin(), m_openList.end(), [](RouteModel::Node* n1, RouteModel::Node* n2) -> bool{
+                                                        return (n1->m_gValue + n1->m_hValue) > (n2->m_gValue + n2->m_hValue);
+                                                    }
+    ); 
+    if(m_openList.size()>0){
+        nextNode = m_openList.back();
+        m_openList.pop_back();
+    }
+    return nextNode;
+}

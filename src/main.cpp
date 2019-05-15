@@ -59,7 +59,10 @@ int main(int argc, const char **argv)
 
     // Perform search and render results.
     RoutePlanner route_planner{model, 10, 10, 90, 90};
+    route_planner.AStarSearch();
     Render render{model};
+
+    std::cout<<"Distance = " << route_planner.GetDistance()<<std::endl;
 
     auto display = io2d::output_surface{400, 400, io2d::format::argb32, io2d::scaling::none, io2d::refresh_style::fixed, 30};
     display.size_change_callback([](io2d::output_surface& surface){
