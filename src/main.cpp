@@ -9,6 +9,32 @@
 #include "route_planner.h"
 
 using namespace std::experimental;
+using std::cout;
+using std::endl;
+
+const int MIN_X = 0;
+const int MAX_X = 100;
+const int MIN_Y = 0;
+const int MAX_Y = 100;
+
+bool valuesInBounds(float x, float y){
+    return (x>=MIN_X && x<=MAX_X) && (y>=MIN_Y && y<=MAX_Y);
+}
+
+void inputCoordinates(float& x, float& y, std::string string){
+    char c;
+    while(1){
+        cout<<"Please enter x, y coordinates for "<< string <<" seperated by comma (0-100): ";
+        std::cin>>x>>c>>y;
+        if(valuesInBounds(x, y)){
+            break;
+        }
+    }
+}
+
+void printCoordinates(float x, float y, std::string string){
+    cout<<string<<" coordinates = " << "[ " << x << ", "<< y << "]"<<endl;
+}
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 {   
@@ -53,13 +79,27 @@ int main(int argc, const char **argv)
     // TODO: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below.
+    float start_x = 0, start_y=0, end_x =0, end_y =0;
+
+    inputCoordinates(start_x, start_y, "start-point");
+    inputCoordinates(end_x, end_y, "end-point");
+
+    printCoordinates(start_x, start_y, "start-point");
+    printCoordinates(end_x, end_y, "end-point");
 
     // Build Model.
+    cout<<"Building model " <<endl;
     RouteModel model{osm_data};
 
     // Perform search and render results.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    cout<<"Planning route " <<endl;
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
+    //RoutePlanner route_planner{model, 10, 10, 90, 90};
+
+    cout<<"Initiating search " <<endl;
     route_planner.AStarSearch();
+    cout<<"Rendering model " <<endl;
+
     Render render{model};
 
     std::cout<<"Distance = " << route_planner.GetDistance()<<std::endl;
