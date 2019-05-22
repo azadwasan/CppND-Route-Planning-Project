@@ -24,7 +24,7 @@ vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node* curr
     }
 
     foundPath.emplace_back(*current_node);
-    while((parent = current_node->m_parent)!=nullptr){
+    while((parent = current_node->parent)!=nullptr){
         foundPath.emplace_back(*parent);
         m_distance += current_node->distance(*parent);
         current_node = parent;
@@ -34,8 +34,19 @@ vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node* curr
 }
 
 void RoutePlanner::AStarSearch(){
-    m_endNode->m_parent = m_startNode;
-    m_Model.path = ConstructFinalPath(m_endNode);
+    m_startNode->visited = true;
+    m_openList.push_back(m_startNode);
+    RouteModel::Node* currentNode = nullptr;
+    while(m_openList.size()>0){
+        currentNode = NextNode();
+        if(currentNode->distance(*m_endNode) == 0){      //TODO: What if this is not true, i.e., due to float arithimatics for example
+            m_Model.path = ConstructFinalPath(currentNode);
+            return;
+        }
+        else{
+            AddNeighbors(currentNode);
+        }
+    }
 }
 
 float RoutePlanner::CalculateHValue(const RouteModel::Node* node){
@@ -45,7 +56,7 @@ float RoutePlanner::CalculateHValue(const RouteModel::Node* node){
 RouteModel::Node* RoutePlanner::NextNode(){
     RouteModel::Node* nextNode = nullptr;
     std::sort(m_openList.begin(), m_openList.end(), [](RouteModel::Node* n1, RouteModel::Node* n2) -> bool{
-                                                        return (n1->m_gValue + n1->m_hValue) > (n2->m_gValue + n2->m_hValue);
+                                                        return (n1->g_value + n1->h_value) > (n2->g_value + n2->h_value);
                                                     }
     ); 
     if(m_openList.size()>0){
@@ -60,11 +71,11 @@ void RoutePlanner::AddNeighbors(RouteModel::Node* currentNode){
         std::cout<<"RoutePlanner::AddNeighbors, received nullptr, exiting "<<std::endl;
     }
     currentNode->FindNeighbors();
-    for(auto& neighborNode:currentNode->m_neighbors){
-        neighborNode->m_parent = currentNode;
-        neighborNode->m_gValue = currentNode->m_gValue + currentNode->distance(*neighborNode);
-        neighborNode->m_hValue = CalculateHValue(neighborNode);
+    for(auto& neighborNode:currentNode->neighbors){
+        neighborNode->parent = currentNode;
+        neighborNode->g_value = currentNode->g_value + currentNode->distance(*neighborNode);
+        neighborNode->h_value = CalculateHValue(neighborNode);
         m_openList.push_back(neighborNode);
-        neighborNode->m_visited = true;
+        neighborNode->visited = true;
     }
 }

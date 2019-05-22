@@ -48,19 +48,19 @@ RouteModel::Node::Node(float x, float y):RouteModel::Node::Node(0, nullptr, Mode
 
 RouteModel::Node::Node(int idx, RouteModel * search_model, Model::Node node) :
     Model::Node(node), parent_model{search_model}
-      , m_parent{nullptr}, m_hValue{std::numeric_limits<float>::max()}, m_gValue{0.0}
-      , m_visited{false}, m_neighbors{}, index(idx) {
+      , parent{nullptr}, h_value{std::numeric_limits<float>::max()}, g_value{0.0}
+      , visited{false}, neighbors{}, index(idx) {
 }
 
-RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) const{
+RouteModel::Node* RouteModel::Node::FindNeighbor(vector<int> node_indices) const{
     Node* closestNeighbor = nullptr;
-    double currentDistance = std::numeric_limits<double>::max();
+    double minDistance = std::numeric_limits<double>::max();
     for(int nodeIndex:node_indices){
-        Node node = parent_model->m_Nodes[nodeIndex];
-        if(!node.m_visited && (&node!=this)){
+        Node& node = parent_model->m_Nodes[nodeIndex];
+        if(!node.visited && distance(node)!=0){
             double newDistnace = distance(node);
-            if(newDistnace<currentDistance || closestNeighbor==nullptr){
-                currentDistance = newDistnace;
+            if(newDistnace<minDistance || closestNeighbor==nullptr){
+                minDistance = newDistnace;
                 closestNeighbor = &node;
             }
         }
@@ -69,10 +69,13 @@ RouteModel::Node* RouteModel::Node::FindNeighbors(vector<int> node_indices) cons
 }
 
 void RouteModel::Node::FindNeighbors(){
-    for(const Road* road:parent_model->node_to_road[index]){
-        RouteModel::Node* neighboringNode = FindNeighbors(parent_model->Ways()[road->way].nodes);
+   for(const Road* road:parent_model->node_to_road[this->index]){
+        RouteModel::Node* neighboringNode = nullptr;
+        if(parent_model){
+            neighboringNode = this->FindNeighbor(parent_model->Ways()[road->way].nodes);
+        }
         if(neighboringNode){
-            m_neighbors.push_back(neighboringNode);
+            this->neighbors.push_back(neighboringNode);
         }
     }
 }

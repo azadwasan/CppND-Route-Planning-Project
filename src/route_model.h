@@ -24,24 +24,24 @@ class RouteModel : public Model {
     Node(int idx, RouteModel * search_model, Model::Node node);
     void FindNeighbors();
 
-    double distance(const Node& otherNode) const {
-      return std::sqrt(std::pow((x - otherNode.x), 2) + std::pow((y - otherNode.y), 2)) ;
+    double distance(const Model::Node& otherNode) const {
+      return std::sqrt(std::pow((this->x - otherNode.x), 2.0f) + std::pow((this->y - otherNode.y), 2.0f)) ;
     }
        /*****************************************
         ******** Public member variables ********
         *****************************************/ 
     public:
-    Node* m_parent;
-    float m_hValue;
-    float m_gValue;
-    bool m_visited;
-    vector<Node*> m_neighbors;
+    Node* parent;
+    float h_value;
+    float g_value;
+    bool visited;
+    vector<Node*> neighbors;
 
        /*****************************************
         ********    Private Functions    ********
         *****************************************/ 
     private:
-      Node* FindNeighbors(vector<int> node_indices) const;
+      Node* FindNeighbor(vector<int> node_indices) const;
        /*****************************************
         ******* Private member variables ********
         *****************************************/ 
