@@ -29,6 +29,7 @@ void inputCoordinates(float& x, float& y, std::string string){
         if(valuesInBounds(x, y)){
             break;
         }
+        cout<<"Error: Coordinate value(s) out of bound. Please enter values with the defined limits."<<endl;
     }
 }
 
